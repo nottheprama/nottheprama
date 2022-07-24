@@ -1,0 +1,34 @@
+import datetime
+import json
+import time
+import requests
+
+# Endpoint URLs and other stuff too
+RobloxAPI = "https://api.roblox.com/users/2047569988/onlinestatus" # 2047569988 = Roblox User ID
+
+TimePerCheck = 10 # In SECONDS
+IsOnline = None # We don't want to keep spamming
+
+# Now we are actually gonna try start the check...
+while True :
+    # school never taught me this
+    # StatusResponse = requests.get(RobloxAPI)
+    StatusResponseFormatted = requests.get(RobloxAPI).content.decode("UTF-8") # searched this up too
+    print(StatusResponseFormatted)
+
+    # so now we wanna format it into json or some shit
+    # it makes stuff more comfy 
+    Formatted = json.loads(StatusResponseFormatted)
+
+    # So now if the user online
+    if Formatted["IsOnline"] is True:
+        if IsOnline == False or IsOnline == None :
+            print("[" + str(datetime.datetime.now()) + "] Use is online")
+            IsOnline = True
+    elif Formatted["IsOnline"] is False:
+        if IsOnline == True or IsOnline == None :
+            print("[" + str(datetime.datetime.now()) + "] User is offline")
+            IsOnline = False
+    
+    # Now wait for 10 seconds
+    time.sleep(TimePerCheck)
